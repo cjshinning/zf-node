@@ -1,0 +1,22 @@
+{
+  "name": "cj-lession",
+  "version": "2.1.1",
+  "description": "",
+  "main": "index.js",
+  "bin": {
+    "cl": "./bin/www.js"
+  },
+  "scripts": {
+    "dev": "mine"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "mine": "^0.1.0"
+  },
+  "devDependencies": {
+    "webpack": "^5.79.0",
+    "webpack-cli": "^5.0.1"
+  }
+}
