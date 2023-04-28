@@ -1,0 +1,11 @@
+- node事件环（node事件环和浏览器事件环的区别） poll（i/o阶段） setTimmediate（check阶段） nextTick（微任务）
+- Node中的模块 commonjs规范 es6module require语法的原理（fs.readFileSync）+内置包裹成一个函数（函数的形参 exports require module __dirname __filename） （exports和module.exports区别）具备缓存功能（可以省略模块后缀）模块的查找规则
+- 全局属性（只带的是可以直接在文件中访问的属性）Buffer process exports require module __dirname __filename setTimeout setInterval...(encodeURL,unescape)
+- process argv （commander） cwd() env
+- Buffer node中的二进制存储 用来表示内存（表现形式16进制）进制转化 base64编码格式
+- Buffer.from() Buffer.alloc() Buffer.concat() Buffer.slice() Buffer.isBuffer()
+文件模块 第三方模块 npm的使用方式 版本号 安装方式 如何发布包 定义scripts npx
+- fs.readFile + fs.writeFile(fs.copyFile)
+- 文件流 fs.open fs.read fs.write fs.close
+- 文件可读流 on('data') on('end') / on('open') on('close') - pause resume
+- 可写流 write() end() / on('drain')
