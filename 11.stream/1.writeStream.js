@@ -18,6 +18,8 @@ let flag = ws.write('c');
 console.log(flag);
 flag = ws.write('j');
 console.log(flag);
+flag = ws.write('a');
+console.log(flag);
 
 ws.on('drain', function () { //必须达到预期并且消耗掉
   console.log('干了');

@@ -1,5 +1,6 @@
 const fs = require('fs');
 const EventEmitter = require('events');
+const Queue = require('./Queue');
 
 // class Writable extends EventEmitter {
 //   constructor() {
@@ -26,7 +27,8 @@ class WriteStream extends EventEmitter {
     this.needDrain = false; //默认是否触发drain事件
     this.len = 0; //需要的统计的长度
     this.offset = 0;  //每次写入时的偏移量
-    this.cache = [];  //用来实现缓存的
+    // this.cache = [];  //用来实现缓存的
+    this.cache = new Queue;  //用来实现缓存的
   }
   write(chunk, encoding = this.encoding, cb = () => { }) { //用户调用的write方法
     // 判断是真的写入 还是放到缓存中
@@ -40,7 +42,12 @@ class WriteStream extends EventEmitter {
     }
 
     if (this.writing) { //如果正在写入就先存起来 稍后再去写入
-      this.cache.push({
+      // this.cache.push({
+      //   chunk,
+      //   encoding,
+      //   cb
+      // })
+      this.cache.offer({
         chunk,
         encoding,
         cb
@@ -56,7 +63,8 @@ class WriteStream extends EventEmitter {
     return ret;
   }
   clearBuffer() { //多个异步并发 可以靠队列来实现 依次清空
-    let data = this.cache.shift();
+    // let data = this.cache.shift();
+    let data = this.cache.poll();
     if (data) {
       let { chunk, encoding, cb } = data;
       this._write(chunk, encoding, () => {
