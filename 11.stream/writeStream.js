@@ -99,3 +99,5 @@ class WriteStream extends EventEmitter {
 }
 
 module.exports = WriteStream;
+
+// 实现读一点（on('data') on('end') pause resume ）写一点 （wirte,end）

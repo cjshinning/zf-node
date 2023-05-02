@@ -9,7 +9,7 @@ const ReadStream = require('./ReadStream');
 
 // fs.open fs.read fs.close 内部是继承了stream模块，并且基于这三个方法
 // let rs = fs.createReadStream(path.resolve(__dirname, 'test.txt'), {
-  let rs = new fs.ReadStream(path.resolve(__dirname, 'test.txt'), {
+  let rs = new ReadStream(path.resolve(__dirname, 'test.txt'), {
   flags: 'r', //创建可读流的标志是r5，读取文件
   encoding: null,  //编码默认null buffer
   autoClose: false,  // 读取完毕后自动关闭

@@ -107,13 +107,13 @@ class LinkList {
 
 module.exports = LinkList;
 
-let ll = new LinkList();
-ll.add(0, 100); //往索引0处添加
-ll.add(0, 200);
-ll.add(300);
+// let ll = new LinkList();
+// ll.add(0, 100); //往索引0处添加
+// ll.add(0, 200);
+// ll.add(300);
 
-let reverseList = ll.reverseLinkedList();
-console.log(reverseList);
+// let reverseList = ll.reverseLinkedList();
+// console.log(reverseList);
 
 // head = 100
 // head = 200 next => head

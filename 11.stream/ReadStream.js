@@ -29,6 +29,17 @@ class ReadStream extends EventEmitter {
       }
     })
   }
+  pipe(ws) {
+    this.on('data', (chunk) => {
+      let flag = ws.write(chunk);
+      if (!flag) {
+        this.pause();
+      }
+    })
+    ws.on('drain', () => {
+      this.resume();
+    })
+  }
   pause() {
     this.flowing = false;
   }
@@ -55,7 +66,7 @@ class ReadStream extends EventEmitter {
 
     // fd一定存在了，buffer是内存内存是引用类型
     const buffer = Buffer.alloc(this.highWaterMark);
-    let howMuchToRead = Math.min((this.end - this.offset + 1), this.highWaterMark); //真正要读取的个数
+    let howMuchToRead = this.end ? Math.min((this.end - this.offset + 1), this.highWaterMark) : this.highWaterMark; //真正要读取的个数
     fs.read(this.fd, buffer, 0, howMuchToRead, this.offset, (err, bytesRead) => {
       if (bytesRead) {
         this.offset += bytesRead;
