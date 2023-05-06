@@ -1,0 +1,16 @@
+{
+  "name": "zhuzhu-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "bin":{
+    "zz":"./bin/www.js",
+    "zz-server":"./bin/www.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
