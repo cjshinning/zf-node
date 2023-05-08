@@ -27,11 +27,11 @@ forEachObj(config, (value, key) => {
   finalConfig[key] = program.opts()[key] || value.default;
 })
 
-console.log(finalConfig);
-
-
 // 1.解析用户参数
 // 2.开启服务器
+const Server = require('../src/index');
+let server = new Server(finalConfig); //传入开启服务器的必备服务
 
+server.start();
 
 
