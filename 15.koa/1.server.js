@@ -3,14 +3,22 @@
 const Koa = require('./koa');
 const app = new Koa();
 
-app.use(function (req, res) {
-  // ctx是koa中的上下文对象
+app.use(function (ctx) {
+  // ctx是koa中的上下文对象（req,res原生的）（request,response是自己封装的）
+  // koa基于requet对象自己封装了属性 
+  console.log(ctx.req.url); //原生的req对象
+  console.log(ctx.request.req.url); //原生的
 
-  // ctx.body = 'hello';
-  res.end('hello my');
+  console.log(ctx.request.path); //自己封装的
+  console.log(ctx.path); //自己封装的
+
+  ctx.request.x = 1;
+
 })
 
 app.listen(3000);
+
+const app1 = new Koa();
 
 // 实例上比较核心的三个方法：listen,use,on('error)
 
