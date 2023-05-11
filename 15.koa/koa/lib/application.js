@@ -2,6 +2,7 @@
 
 const http = require('http');
 const context = require('./context');
+const Stream = require('stream');
 
 // let c = Object.create(context);
 // c.a = 5;
@@ -37,7 +38,23 @@ class Application {
   }
   handleRequest(req, res) {
     let ctx = this.createContext(req, res);
+
+    res.statusCode = 404;
+
     this.fn(ctx);
+
+    let body = ctx.body;
+    if (typeof body == 'string' || Buffer.isBuffer(body)) {
+      res.end(ctx.body);
+    } else if (body instanceof Stream) {
+      body.pipe(res);
+    } else if (typeof body == 'object') {
+      res.end(JSON.stringify(body));
+    } else {
+      res.end('Not Found');
+    }
+
+
   }
   listen(...args) {
     let server = http.createServer(this.handleRequest.bind(this));
