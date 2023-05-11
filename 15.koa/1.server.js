@@ -12,13 +12,16 @@ app.use(function (ctx) {
   console.log(ctx.request.path); //自己封装的
   console.log(ctx.path); //自己封装的
 
-  ctx.request.x = 1;
+  // ctx.request.x = 1;
+  ctx.response.body = 'hello';
+  ctx.response.body = 'world';
+  console.log(ctx.response.body);
 
 })
 
 app.listen(3000);
 
-const app1 = new Koa();
+// const app1 = new Koa();
 
 // 实例上比较核心的三个方法：listen,use,on('error)
 
