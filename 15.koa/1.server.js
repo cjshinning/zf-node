@@ -6,6 +6,7 @@ const app = new Koa();
 app.use(function (ctx) {
   // ctx是koa中的上下文对象（req,res原生的）（request,response是自己封装的）
   // koa基于requet对象自己封装了属性 
+  console.log('my koa');
   console.log(ctx.req.url); //原生的req对象
   console.log(ctx.request.req.url); //原生的
 
@@ -13,9 +14,10 @@ app.use(function (ctx) {
   console.log(ctx.path); //自己封装的
 
   // ctx.request.x = 1;
-  ctx.response.body = 'hello';
-  ctx.response.body = 'world';
-  console.log(ctx.response.body);
+  ctx.body = 'hello';
+  ctx.body = 'world';
+  // body并不res.end方法，用最后的返回到页面上
+  console.log(ctx.body);
 
 })
 
