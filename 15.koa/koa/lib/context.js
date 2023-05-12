@@ -17,10 +17,12 @@ function defineGetter(target, key) {
 
 function defineSetter(target, key) {
   proto.__defineSetter__(key, function (value) {
+    // console.log(this.__proto__.__proto__ === proto);  //true
     this[target][key] = value;
   })
 }
 
+// 代理实现 ctx.xxx = ctx.request.xxx ctx.xxx = ctx.response.xxx
 defineGetter('request', 'path');
 defineGetter('request', 'url');
 defineGetter('response', 'body');

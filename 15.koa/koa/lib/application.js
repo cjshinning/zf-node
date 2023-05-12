@@ -10,6 +10,7 @@ const Stream = require('stream');
 
 const request = require('./request');
 const response = require('./response');
+const { nextTick } = require('process');
 
 class Application {
   constructor() {
@@ -17,9 +18,12 @@ class Application {
     this.context = Object.create(context);  //这个方法一般用于继承，可以继承原本的属性，用户扩展，扩展到新创建的对象，不会影响原来的对象
     this.request = Object.create(request);
     this.response = Object.create(response);
+
+    this.middlewares = [];
   }
   use(fn) {
-    this.fn = fn; //将use方法重点额函数保存到实例上
+    this.middlewares.push(fn);
+    // this.fn = fn; //将use方法重点额函数保存到实例上
   }
   createContext(req, res) {
     // 每次都创建一个全新的上下文 保证每次请求之间不干扰
@@ -36,25 +40,36 @@ class Application {
 
     return ctx;
   }
+  compose(ctx) {
+    // 需要将多个函数进行组合
+    const dispatch = (i) => {
+      // 如果一个方法都没有
+      if (i === this.middlewares.length) return Promise.resolve();  //终止条件
+      let middleware = this.middlewares[i];
+      // reduce方法也可以实现，新版本的resolve，如果内部是一个promise就不会在包装了，如果不是promise就包装成promise
+      return Promise.resolve(middleware(ctx, () => dispatch(i + 1)));
+    }
+    return dispatch(0);
+  }
   handleRequest(req, res) {
     let ctx = this.createContext(req, res);
 
     res.statusCode = 404;
 
-    this.fn(ctx);
+    // this.fn(ctx);
 
-    let body = ctx.body;
-    if (typeof body == 'string' || Buffer.isBuffer(body)) {
-      res.end(ctx.body);
-    } else if (body instanceof Stream) {
-      body.pipe(res);
-    } else if (typeof body == 'object') {
-      res.end(JSON.stringify(body));
-    } else {
-      res.end('Not Found');
-    }
-
-
+    this.compose(ctx).then(() => {
+      let body = ctx.body;
+      if (typeof body == 'string' || Buffer.isBuffer(body)) {
+        res.end(ctx.body);
+      } else if (body instanceof Stream) {
+        body.pipe(res);
+      } else if (typeof body == 'object') {
+        res.end(JSON.stringify(body));
+      } else {
+        res.end('Not Found');
+      }
+    })
   }
   listen(...args) {
     let server = http.createServer(this.handleRequest.bind(this));
