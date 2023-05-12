@@ -44,8 +44,10 @@ class Application extends EventEmitter {
   }
   compose(ctx) {
     // 需要将多个函数进行组合
+    let index = 0;
     const dispatch = (i) => {
       // 如果一个方法都没有
+      if (index <= i) return Promise.reject('next() call multiples');
       if (i === this.middlewares.length) return Promise.resolve();  //终止条件
       let middleware = this.middlewares[i];
       // reduce方法也可以实现，新版本的resolve，如果内部是一个promise就不会在包装了，如果不是promise就包装成promise
