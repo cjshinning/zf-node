@@ -3,6 +3,7 @@
 const http = require('http');
 const context = require('./context');
 const Stream = require('stream');
+const EventEmitter = require('events');
 
 // let c = Object.create(context);
 // c.a = 5;
@@ -12,8 +13,9 @@ const request = require('./request');
 const response = require('./response');
 const { nextTick } = require('process');
 
-class Application {
+class Application extends EventEmitter {
   constructor() {
+    super();
     // 我们不能直接把request赋值给context，如果其中一个应该改变了request和response，保证每次应用不会互相影响
     this.context = Object.create(context);  //这个方法一般用于继承，可以继承原本的属性，用户扩展，扩展到新创建的对象，不会影响原来的对象
     this.request = Object.create(request);
@@ -47,7 +49,11 @@ class Application {
       if (i === this.middlewares.length) return Promise.resolve();  //终止条件
       let middleware = this.middlewares[i];
       // reduce方法也可以实现，新版本的resolve，如果内部是一个promise就不会在包装了，如果不是promise就包装成promise
-      return Promise.resolve(middleware(ctx, () => dispatch(i + 1)));
+      try {
+        return Promise.resolve(middleware(ctx, () => dispatch(i + 1)));
+      } catch (e) {
+        return Promise.reject(e);
+      }
     }
     return dispatch(0);
   }
@@ -69,6 +75,13 @@ class Application {
       } else {
         res.end('Not Found');
       }
+    }).catch(err => {
+      this.emit('error', err);
+    })
+
+    this.on('error', () => {
+      res.statusCode = 500;
+      res.end('Internal Server Error');
     })
   }
   listen(...args) {

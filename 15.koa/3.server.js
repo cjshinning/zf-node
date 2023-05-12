@@ -14,6 +14,7 @@ const sleep = function () {
 app.use(async function (ctx, next) {
   console.log(1);
   await next();
+  throw new Error('error');
   console.log(2);
 })
 
@@ -35,3 +36,7 @@ app.use(async function (ctx, next) {
 // 洋葱模型 1,3,5,2,4,6
 
 app.listen(3002);
+
+app.on('error', function (err) {
+  console.log('*******', err)
+})
