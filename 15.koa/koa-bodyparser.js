@@ -1,3 +1,5 @@
+const querystring = require('querystring');
+
 module.exports = function bodyParser() {
   return async (ctx, next) => {
     ctx.request.body = await body(ctx);
@@ -19,7 +21,19 @@ function body(ctx) {
       // 2.json格式 {a:1,b:2}
       // 3.图片格式
 
-      resolve(Buffer.concat(arr));
+      // Content-Type: application/x-www-form-urlencoded
+
+      let type = ctx.get('content-type');  //req.headers
+      let data = Buffer.concat(arr);  //用户传递的数据
+      if (type == 'application/x-www-form-urlencoded') {  //a=1&b=2
+        resolve(querystring.parse(data.toString())); //将字符串格式转化成对象
+      } else if (type == 'application/json') {
+        resolve(JSON.parse(data.toString()));
+      } else if (type == 'text/plain') {
+        resolve(data.toString());
+      } else {
+        resolve();
+      }
     })
   })
 }
