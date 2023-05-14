@@ -9,20 +9,21 @@
 </head>
 
 <body>
-  <form action="/login" method="post">
+  <form action="/login" method="post" enctype="multipart/form-data">
     <input type="text" name="username" />
     <input type="text" name="password" />
+    <input type="file" name="avatar" />
     <button>提交</button>
   </form>
 
   <script>
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', '/login', true);
-    xhr.setRequestHeader('Content-type', 'application/json');
-    xhr.onload = function () {
-      console.log(xhr.response);
-    }
-    xhr.send(JSON.stringify({ a: 1, b: 2 }))
+    // const xhr = new XMLHttpRequest();
+    // xhr.open('POST', '/login', true);
+    // xhr.setRequestHeader('Content-type', 'application/json');
+    // xhr.onload = function () {
+    //   console.log(xhr.response);
+    // }
+    // xhr.send(JSON.stringify({ a: 1, b: 2 }))
   </script>
 </body>
 

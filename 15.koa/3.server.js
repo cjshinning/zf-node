@@ -12,10 +12,8 @@ const sleep = function () {
 }
 // 1, 3, 2, sleep, 5, 6, 4
 app.use(async function (ctx, next) {
-  console.log(1);
   await next();
   throw new Error('error');
-  console.log(2);
 })
 
 app.use(async function (ctx, next) {

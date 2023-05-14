@@ -31,9 +31,41 @@ function body(ctx) {
         resolve(JSON.parse(data.toString()));
       } else if (type == 'text/plain') {
         resolve(data.toString());
+      } else if (type.startsWith('multipart/form-data')) {
+        // multipart/form-data; boundary=----WebKitFormBoundaryKOnGU8NwE4wMkuEo
+        // 二进制数据 分割成 多个行
+        let bondary = '--' + type.split('=')[1]
+        let lines = data.split(bondary);
+        lines = lines.slice(1, -1);
+        let resultObj = {};
+        lines.forEach(line => {
+          let [head, body] = line.split('\r\n\r\n');
+
+          let key = head.toString().match(/name="(.+?)"/)[1];
+          if (!head.includes('filename')) {
+            resultObj[key] = body.slice(0, -2).toString();
+          }
+        })
+        resolve(resultObj);
       } else {
         resolve();
       }
     })
   })
 }
+
+// 111111111 & 111111 & 111 & 11
+Buffer.prototype.split = function (bondary) {  //分割二进制
+  let arr = [];
+  let offset = 0;
+  let currentPosition = 0;
+  // 找到当前分隔符的位置 只要能找到就一直查找
+  while (-1 != (currentPosition = this.indexOf(bondary, offset))) {
+    arr.push(this.slice(offset, currentPosition));
+    offset = currentPosition + bondary.length;
+  }
+  arr.push(this.slice(offset));
+  return arr;
+}
+
+// console.log(Buffer.from('111111&11111&111&111').split('&'));
