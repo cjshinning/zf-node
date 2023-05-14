@@ -8,7 +8,7 @@ const path = require('path');
 const bodyParser = require('./koa-bodyparser');
 const static = require('./koa-static');
 
-app.use(bodyParser());
+app.use(bodyParser(path.resolve(__dirname, 'upload')));
 
 // 当用户访问/login的时候 get => 返回一个登录页
 

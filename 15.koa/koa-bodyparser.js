@@ -1,14 +1,17 @@
 const querystring = require('querystring');
+const uuid = require('uuid');
+const fs = require('fs');
+const path = require('path');
 
-module.exports = function bodyParser() {
+module.exports = function bodyParser(uploadDir) {
   return async (ctx, next) => {
-    ctx.request.body = await body(ctx);
+    ctx.request.body = await body(ctx, uploadDir);
     return next();
   }
 }
 
 
-function body(ctx) {
+function body(ctx, uploadDir) {
   return new Promise((resolve, reject) => {
     // 读取用户传递的数据
     let arr = [];
@@ -44,8 +47,24 @@ function body(ctx) {
           let key = head.toString().match(/name="(.+?)"/)[1];
           if (!head.includes('filename')) {
             resultObj[key] = body.slice(0, -2).toString();
+          } else {
+            let originalName = head.toString().match(/filename="(.+?)"/)[1];
+            // 是文件 文件上传
+            let filename = uuid.v4(); //产生一个唯一的文件名
+            console.log(uploadDir, filename);
+
+            // 获取文件内容
+            let content = line.slice(head.length + 4, -2);
+            fs.writeFileSync(path.join(uploadDir, filename), content);
+            resultObj[key] = (resultObj[key] || []);
+            resultObj[key].push({
+              size: content.length,
+              name: originalName,
+              filename
+            })
           }
         })
+        console.log(resultObj);
         resolve(resultObj);
       } else {
         resolve();
